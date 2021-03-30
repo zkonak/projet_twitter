@@ -1,7 +1,7 @@
 const db = require('../db');
 
 exports.getLasts = (callback) => {
-    db.query('SELECT t.*,u.* FROM twitter.tweets  t LEFT JOIN twitter.users u ON t.user_id=u.id ORDER BY t.id DESC LIMIT 20;', (error, result) => {
+    db.query('SELECT t.*,u.*,t.id tweet_id,DATE_FORMAT(t.creation_date, " %W %D %M %Y %H:%I") date FROM twitter.tweets  t LEFT JOIN twitter.users u ON t.user_id=u.id ORDER BY t.id DESC LIMIT 20;', (error, result) => {
         if (error) {
             console.log('error: ', error);
             callback(error, null);
@@ -13,7 +13,7 @@ exports.getLasts = (callback) => {
 }
 
 exports.getUserTweet = (user_id, callback) => {
-    db.query(`SELECT t.*,u.* FROM twitter.tweets t LEFT JOIN twitter.users u ON t.user_id=u.id WHERE t.user_id = ${user_id} ORDER BY t.id DESC;`, (error, result) =>{
+    db.query(`SELECT t.*,u.*,t.id tweet_id,DATE_FORMAT(t.creation_date, " %W %D %M %Y %H:%I") date FROM twitter.tweets t LEFT JOIN twitter.users u ON t.user_id=u.id WHERE t.user_id = ${user_id} ORDER BY t.id DESC;`, (error, result) => {
         if (error) {
             callback(error, null);
             return;
@@ -26,8 +26,8 @@ exports.getUserTweet = (user_id, callback) => {
 exports.insertTweet = (requestBody, user_id, callback) => {
     let query = `Insert into twitter.tweets (user_id, creation_date, message) values (${user_id}, CURDATE(), "${requestBody.message}")`;
     console.log(query);
-    db.query( query, (error, result) => {
-        
+    db.query(query, (error, result) => {
+
         if (error) {
             callback(error, null);
             return;
@@ -38,7 +38,7 @@ exports.insertTweet = (requestBody, user_id, callback) => {
 }
 
 exports.getDetailsTweet = (tweet_id, callback) => {
-    db.query(`SELECT t.*,u.* FROM twitter.tweets t LEFT JOIN twitter.users u ON t.user_id=u.id WHERE t.id = ${tweet_id} ORDER BY t.id DESC;`, (error, result) =>{
+    db.query(`SELECT t.*,u.*,t.id tweet_id,DATE_FORMAT(t.creation_date, " %W %D %M %Y %H:%I") date FROM twitter.tweets t LEFT JOIN twitter.users u ON t.user_id=u.id WHERE t.id = ${tweet_id} ORDER BY t.id DESC;`, (error, result) => {
         if (error) {
             callback(error, null);
             return;
