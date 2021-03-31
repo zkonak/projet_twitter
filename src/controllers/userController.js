@@ -90,6 +90,7 @@ exports.authenticate = (request, response) => {
                     const MAXAGE = Math.floor(Date.now() / 1000) + (60 * 60); // 1 hour of expiration
                     const user = {
                         name: result[0].name,
+                        user_id: result[0].id,
                         username: request.body.username, //result[0].username
                         exp: MAXAGE
                     };
