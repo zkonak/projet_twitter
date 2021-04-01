@@ -57,34 +57,42 @@ exports.inscription = (request, response) => {
 
 }
 
-exports.login = (request, response) => {
-
-
-    response.render("login.ejs");
+exports.login = async (request, response) => {
+    const alerts_warning = await request.consumeFlash('warning');
+    console.log(alerts_warning);
+    response.render("login.ejs", {alerts_warning});
 
 }
 
+exports.authenticate = async (request, response) => {
 
-exports.authenticate = (request, response) => {
+    if (!request.body.username || !request.body.password)
+    await request.flash('warning', 'Please fill the required field!')
 
-    user.getByUsername(request.body, (error, result) => {
+    user.getByUsername(request.body, async (error, result) => {
         if (error) {
             response.send(error.message);
         } else if (result.length == 0) {
 
-            response.send("This user doesn't exist!");
+            await request.flash('error', "This user doesn't exist!");
+            // const error = await request.consumeFlash('error');
+            // console.log(alerts_error);
+            response.redirect("/login");
 
         } else {
 
             encryptedPassword = result[0].password;
-            bcrypt.compare(request.body.password, encryptedPassword, (error, correct) => {
+            bcrypt.compare(request.body.password, encryptedPassword, async (error, correct) => {
                 if (error) {
                     response.send(error.message);
                 }
 
 
                 if (!correct) {
-                    response.send("Invalid password!");
+                    await request.flash('incorrect', "Invalid password");
+                    // const incorrect = await request.consumeFlash('incorrect');
+                    response.redirect("/login");
+                    
                 } else {
                     const SECRET = "pouetpouet";
                     const MAXAGE = Math.floor(Date.now() / 1000) + (60 * 60); // 1 hour of expiration
