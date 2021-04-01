@@ -3,12 +3,13 @@ const twitter = require("../models/twitter");
 
 //consulter la liste des listes de tâches
 exports.getHome = (request, response) => {
-    twitter.getLasts((error, tweetList) => {
+    twitter.getLasts(async(error, tweetList) => {
         if (error) {
             response.send(error.message);
         }
+        const alerts_warning = await request.consumeFlash('warning');
         //create html page
-        response.render("index.ejs", { tweetList });
+        response.render("index.ejs", { tweetList, alerts_warning });
     });
 
 }
@@ -88,4 +89,16 @@ exports.deleteTweet = (request, response) => {
         });
 
     });
+}
+
+
+exports.myTweets = (request, response) => {
+
+    twitter.getUserTweet(request.user.user_id, (error, UserTweet) => {
+        if (error) {
+            response.send(error.message);
+        }
+        response.render("profile.ejs", { UserTweet });
+    });
+
 }

@@ -29,9 +29,17 @@
                     <img src="/images/bookmark.png" alt="">
                     <h2>Bookmarks</h2>
                 </a>
-                <a href="/username">
+                <a href="/myTweets">
                     <img src="/images/user.png" alt="">
                     <h2>My Tweets</h2>
+                </a>
+                <a href="/signup">
+                    <img src="/images/logout.png" alt="">
+                    <h2>Sign Up</h2>
+                </a>
+                <a href="/login">
+                    <img src="/images/logout.png" alt="">
+                    <h2>LogIn</h2>
                 </a>
                 <a href="/logout">
                     <img src="/images/logout.png" alt="">
@@ -70,15 +78,24 @@
                             </a>
                             <span class="comments-comment-content-date"><%= tweet.date %></span>
                         </div>
-                        <p class="comments-comment-content-text">
-                            <%= tweet.message %>
-                        </p>
+                        <form action="/updateTweet/<%= tweet.tweet_id %>/<%= tweet.user_id %>" id="tweet-container-form" method="post" class="tweet-container-form">
+                            <div class="tweet-container-message">
+                                <label for="message"></label>
+                                <div class="tweet-container-text">
+                                    <textarea name="message" id="message"><%= tweet.message %></textarea>
+                                </div>
+
+                            </div>
+                            <div class="tweet-container-button">
+                                <button type="submit" class="tweet-button">Update</button>
+                                <button formaction="/deleteTweet/<%= tweet.tweet_id %>/<%= tweet.user_id %>" formmethod="GET" type="submit" class="tweet-button">Delete</button>
+                            </div>
+
+                        </form>
+
                     </div>
+
                 </div>
-
-            </div>
-
-        </div>
     </section>
     <div class="tweet-search"></div>
 

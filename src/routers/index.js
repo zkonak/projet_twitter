@@ -11,6 +11,7 @@ router.post('/addTweet', isAuth, twitterController.addTweet);
 router.get('/showTweet/:tweet_id', twitterController.showTweet);
 router.post('/updateTweet/:tweet_id/:user_id', isAuthUpdate, twitterController.updateTweet);
 router.get('/deleteTweet/:tweet_id/:user_id', isAuthUpdate, twitterController.deleteTweet);
+router.get('/myTweets', isAuth, twitterController.myTweets);
 
 
 

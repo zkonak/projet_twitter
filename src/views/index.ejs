@@ -28,7 +28,7 @@
                     <img src="/images/bookmark.png" alt="">
                     <h2>Bookmarks</h2>
                 </a>
-                <a href="/username">
+                <a href="/myTweets">
                     <img src="/images/user.png" alt="">
                     <h2>My Tweets</h2>
                 </a>
@@ -36,16 +36,27 @@
                     <img src="/images/logout.png" alt="">
                     <h2>Sign Up</h2>
                 </a>
+                <a href="/login">
+                    <img src="/images/logout.png" alt="">
+                    <h2>LogIn</h2>
+                </a>
                 <a href="/logout">
                     <img src="/images/logout.png" alt="">
                     <h2>Logout</h2>
                 </a>
+
             </div>
         </div>
 
         <div class="tweet-container">
             <div class="tweet-container-title">
                 <h3>Home</h3>
+                <% alerts_warning.forEach(function(warning) { %>
+                    <div class="home-error">
+                        <%= warning %>
+                    </div>
+                    <% }); %>
+
             </div>
             <form action="/addTweet" method="post" class="tweet-container-form">
                 <div class="tweet-container-message">
@@ -75,9 +86,11 @@
                                 </a>
                                 <span class="comments-comment-content-date"><%= tweet.date %></span>
                             </div>
-                            <p class="comments-comment-content-text">
-                                <%= tweet.message %>
-                            </p>
+                            <a href="/showTweet/<%= tweet.tweet_id %>">
+                                <p class="comments-comment-content-text">
+                                    <%= tweet.message %>
+                                </p>
+                            </a>
                         </div>
                     </div>
                     <% }) %>
