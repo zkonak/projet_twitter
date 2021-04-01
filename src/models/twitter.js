@@ -13,7 +13,7 @@ exports.getLasts = (callback) => {
 }
 
 exports.getUserTweet = (user_id, callback) => {
-    db.query(`SELECT t.*,u.*,t.id tweet_id,DATE_FORMAT(t.creation_date, " %W %D %M %Y %H:%I") date FROM twitter.tweets t LEFT JOIN twitter.users u ON t.user_id=u.id WHERE t.user_id = ${user_id} ORDER BY t.id DESC;`, (error, result) => {
+    db.query(`SELECT t.*,u.*,t.id tweet_id,DATE_FORMAT(t.creation_date, " %W %D %M %Y %H:%I") date FROM twitter.tweets t RIGHT JOIN twitter.users u ON t.user_id=u.id WHERE u.id = ${user_id} ORDER BY t.id DESC;`, (error, result) => {
         if (error) {
             callback(error, null);
             return;
@@ -39,6 +39,28 @@ exports.insertTweet = (requestBody, user_id, callback) => {
 
 exports.getDetailsTweet = (tweet_id, callback) => {
     db.query(`SELECT t.*,u.*,t.id tweet_id,DATE_FORMAT(t.creation_date, " %W %D %M %Y %H:%I") date FROM twitter.tweets t LEFT JOIN twitter.users u ON t.user_id=u.id WHERE t.id = ${tweet_id} ORDER BY t.id DESC;`, (error, result) => {
+        if (error) {
+            callback(error, null);
+            return;
+        }
+
+        callback(null, result);
+    })
+}
+
+exports.updateTweet = (requestBody, tweet_id, user_id, callback) => {
+    db.query(`UPDATE tweets SET message  = "${requestBody.message}" WHERE id = ${tweet_id};`, (error, result) => {
+        if (error) {
+            callback(error, null);
+            return;
+        }
+
+        callback(null, result);
+    })
+}
+
+exports.deleteTweet = (requestBody, tweet_id, user_id, callback) => {
+    db.query(`DELETE FROM tweets WHERE id = ${tweet_id};`, (error, result) => {
         if (error) {
             callback(error, null);
             return;
