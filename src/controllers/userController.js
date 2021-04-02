@@ -66,76 +66,78 @@ exports.login = async(request, response) => {
 
 exports.authenticate = async(request, response) => {
 
-    if (!request.body.username || !request.body.password)
-        await request.flash('warning', 'Please fill the required field!')
+    if (!request.body.username || !request.body.password) {
+        await request.flash('warning', 'Please fill the required field!');
+        response.redirect("/login");
+    } else {
+        user.getByUsername(request.body, async(error, result) => {
+            if (error) {
+                response.send(error.message);
+            } else if (result.length == 0) {
 
-    user.getByUsername(request.body, async(error, result) => {
-        if (error) {
-            response.send(error.message);
-        } else if (result.length == 0) {
+                await request.flash('warning', "This user doesn't exist!");
+                // const error = await request.consumeFlash('error');
+                // console.log(alerts_error);
+                response.redirect("/login");
 
-            await request.flash('warning', "This user doesn't exist!");
-            // const error = await request.consumeFlash('error');
-            // console.log(alerts_error);
-            response.redirect("/login");
+            } else {
 
-        } else {
-
-            encryptedPassword = result[0].password;
-            bcrypt.compare(request.body.password, encryptedPassword, async(error, correct) => {
-                if (error) {
-                    response.send(error.message);
-                }
-
-
-                if (!correct) {
-                    await request.flash('warning', "Invalid password");
-                    // const incorrect = await request.consumeFlash('incorrect');
-                    response.redirect("/login");
-
-                } else {
-                    const SECRET = "pouetpouet";
-                    const MAXAGE = Math.floor(Date.now() / 1000) + (60 * 60); // 1 hour of expiration
-                    const user = {
-                        name: result[0].name,
-                        user_id: result[0].id,
-                        username: request.body.username, //result[0].username
-                        exp: MAXAGE
-                    };
+                encryptedPassword = result[0].password;
+                bcrypt.compare(request.body.password, encryptedPassword, async(error, correct) => {
+                    if (error) {
+                        response.send(error.message);
+                    }
 
 
+                    if (!correct) {
+                        await request.flash('warning', "Invalid password");
+                        // const incorrect = await request.consumeFlash('incorrect');
+                        response.redirect("/login");
 
-
-
-                    jwt.sign(user, SECRET, (error, token) => {
-                        if (error) {
-                            response.send(error.message);
-                        }
-
-                        request.user = {
+                    } else {
+                        const SECRET = "pouetpouet";
+                        const MAXAGE = Math.floor(Date.now() / 1000) + (60 * 60); // 1 hour of expiration
+                        const user = {
                             name: result[0].name,
-                            username: result[0].username,
+                            user_id: result[0].id,
+                            username: request.body.username, //result[0].username
+                            exp: MAXAGE
                         };
 
-                        response.cookie('authcookie', token, { maxAge: MAXAGE });
-                        response.redirect('/');
-                    });
-                    // response.redirect("/");
-                }
-
-            });
 
 
 
 
+                        jwt.sign(user, SECRET, (error, token) => {
+                            if (error) {
+                                response.send(error.message);
+                            }
 
-        }
+                            request.user = {
+                                name: result[0].name,
+                                username: result[0].username,
+                            };
+
+                            response.cookie('authcookie', token, { maxAge: MAXAGE });
+                            response.redirect('/');
+                        });
+                        // response.redirect("/");
+                    }
+
+                });
 
 
 
 
 
-    });
+            }
+
+
+
+
+
+        });
+    }
 }
 
 exports.logout = (request, response) => {

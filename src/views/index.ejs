@@ -50,14 +50,12 @@
 
         <div class="tweet-container">
             <div class="tweet-container-title">
-                <h3>Home</h3>
-                <% alerts_warning.forEach(function(warning) { %>
-                    <div class="home-error">
-                        <%= warning %>
-                    </div>
-                    <% }); %>
+                <h3>Home</h3> <br>
+
 
             </div>
+
+
             <form action="/addTweet" method="post" class="tweet-container-form">
                 <div class="tweet-container-message">
                     <label for="message"></label>
@@ -65,6 +63,13 @@
                         <textarea name="message" id="message" placeholder="Whats's happening ?"></textarea>
                     </div>
 
+                </div>
+                <div class="home-error">
+                    <% alerts_warning.forEach(function(warning) { %>
+
+                        <%= warning %>
+
+                            <% }); %>
                 </div>
                 <div class="tweet-container-button">
                     <button type="submit" class="tweet-button">Tweet</button>

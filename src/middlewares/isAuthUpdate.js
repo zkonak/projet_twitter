@@ -7,8 +7,10 @@ const isAuthUpdate = (request, response, next) => {
     const token = request.cookies.authcookie;
     jwt.verify(token, SECRET, (error, user) => {
         if (error) {
-            response.send(error);
-            return;
+            // response.send(error);
+            request.flash('warning', "You must be login.");
+            //return;
+            next();
         } else {
             console.log("ici isAuth");
             console.log(user);
@@ -18,7 +20,8 @@ const isAuthUpdate = (request, response, next) => {
             // Useless or not ?!
             if (Date.now() / 1000 >= exp) {
                 response.clearCookie("authcookie");
-                response.send("Session expired. Try to reconnect you.");
+                // response.send("Session expired. Try to reconnect you.");
+                request.flash('warning', "Session expired. Try to reconnect you.");
             }
 
             const { tweet_id, user_id } = request.params;
@@ -37,9 +40,10 @@ const isAuthUpdate = (request, response, next) => {
 
                 next();
 
-            }
-            else {
-                response.send("You don't have permission.")
+            } else {
+                //response.send("You don't have permission.")
+                request.flash('warning', "You don't have permission.");
+                next();
             }
         }
     });

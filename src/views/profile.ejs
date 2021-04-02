@@ -76,6 +76,14 @@
                 </div>
             </div>
 
+            <div class="home-error">
+                <% alerts_warning.forEach(function(warning) { %>
+
+                    <%= warning %>
+
+                        <% }); %>
+            </div>
+
             <div class="comments">
                 <% UserTweet.forEach((tweet) => { %>
 
